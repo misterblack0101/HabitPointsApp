@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "324800315559",
+    "project_id": "habitpointsapp",
+    "storage_bucket": "habitpointsapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324800315559:android:5f942610176846bc7adb82",
+        "android_client_info": {
+          "package_name": "com.misterblackapps.habitpointsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324800315559-84nsgvafi3792eopib9rlh2th1d4bnop.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.misterblackapps.habitpointsapp",
+            "certificate_hash": "ed8b1bbf93f93188b8c513846771b95ef382d154"
+          }
+        },
+        {
+          "client_id": "324800315559-gli9te4ku73q3cjclurpmo94k463pcj4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3XBvBnZbUvLmpKJfpN1OgyeJVU_MN2q0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324800315559-gli9te4ku73q3cjclurpmo94k463pcj4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
