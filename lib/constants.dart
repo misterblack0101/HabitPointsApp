@@ -6,6 +6,6 @@ class Constants {
   static const String totalDays = "totalDays";
   static const String points = "totalPoints";
   static const String streak = "streak";
-  static late final User user;
-  static late final String userId;
+  static User? user;
+  static late String userId;
 }

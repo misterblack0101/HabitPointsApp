@@ -1,10 +1,5 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/constants.dart';
-import 'package:flutter_application_1/pages/home_page.dart';
-import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_application_1/services/alert_dialog.dart';
 import 'package:flutter_signin_button/button_builder.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -21,8 +16,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn googleSignin = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _emailIdController = TextEditingController();
+  late TextEditingController passwordController, emailIdController;
+
+  @override
+  void initState() {
+    super.initState();
+    passwordController = TextEditingController();
+    emailIdController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailIdController.dispose();
+    passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               //emailId field
               TextFormField(
-                controller: _emailIdController,
+                controller: emailIdController,
                 decoration: const InputDecoration(
                     hintText: "Enter your Email Id here",
                     labelText: "Email-id"),
@@ -60,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 10),
               //password field
               TextFormField(
-                controller: _passwordController,
+                controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   hintText: "Enter your password here",
@@ -79,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               //
               // Login buttons start here.
               //
-              //Create account button
+              //Sign Up button
               SignInButtonBuilder(
                 text: "Create account",
                 icon: Icons.person_add_alt_1,
@@ -88,8 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                   bool status = false;
                   try {
                     await firebaseAuth.createUserWithEmailAndPassword(
-                        email: _emailIdController.text,
-                        password: _passwordController.text);
+                        email: emailIdController.text,
+                        password: passwordController.text);
                     status = true;
                   } catch (e) {
                     status = false;
@@ -111,16 +119,11 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   UserCredential? firebaseUser;
                   try {
-                    firebaseUser =
-                        await firebaseAuth.signInWithEmailAndPassword(
-                            email: _emailIdController.text,
-                            password: _passwordController.text);
+                    await firebaseAuth.signInWithEmailAndPassword(
+                        email: emailIdController.text,
+                        password: passwordController.text);
                   } catch (e) {
-                    firebaseUser = null;
                     alertDialogShower(context, "Login Failed!", e.toString());
-                  }
-                  if (firebaseUser != null) {
-                    Navigator.of(context).pushNamed(RouteManager.homePage);
                   }
                 },
               ),
@@ -130,16 +133,20 @@ class _LoginPageState extends State<LoginPage> {
               SignInButton(
                 Buttons.GoogleDark,
                 onPressed: () async {
-                  final GoogleSignInAccount? googleUser =
-                      await googleSignin.signIn();
-                  final GoogleSignInAuthentication googleAuth =
-                      await googleUser!.authentication;
-                  final AuthCredential credential =
-                      GoogleAuthProvider.credential(
-                          idToken: googleAuth.idToken,
-                          accessToken: googleAuth.accessToken);
-                  await firebaseAuth.signInWithCredential(credential);
-                  Navigator.of(context).pushNamed(RouteManager.homePage);
+                  try {
+                    final GoogleSignInAccount? googleUser =
+                        await googleSignin.signIn();
+                    final GoogleSignInAuthentication googleAuth =
+                        await googleUser!.authentication;
+                    final AuthCredential credential =
+                        GoogleAuthProvider.credential(
+                            idToken: googleAuth.idToken,
+                            accessToken: googleAuth.accessToken);
+                    await firebaseAuth.signInWithCredential(credential);
+                  } catch (e) {
+                    alertDialogShower(
+                        context, "An error occured!", e.toString());
+                  }
                 },
               ),
             ],
