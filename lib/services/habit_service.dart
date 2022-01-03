@@ -1,3 +1,0 @@
-/* 
-to save and retrieve habit info from db.
-*/

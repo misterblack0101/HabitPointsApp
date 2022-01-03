@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/alert_dialog.dart';
+import 'package:flutter_application_1/widgets/alert_dialog.dart';
 import 'package:flutter_signin_button/button_builder.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -117,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
               SignInButton(
                 Buttons.Email,
                 onPressed: () async {
-                  UserCredential? firebaseUser;
                   try {
                     await firebaseAuth.signInWithEmailAndPassword(
                         email: emailIdController.text,
