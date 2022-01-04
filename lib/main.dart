@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/landing_page.dart';
 import 'package:flutter_application_1/routes/routes.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_application_1/routes/routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseDatabase.instance.setPersistenceEnabled(true);
   runApp(MyApp());
 
 //TODO: Add splash screen while things load. create a new page preferably.
