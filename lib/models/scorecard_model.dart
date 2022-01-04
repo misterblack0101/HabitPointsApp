@@ -7,6 +7,7 @@ import 'package:flutter_application_1/constants.dart';
 
 class Scorecard {
   final String habitName;
+  String comment;
   int barStrength, totalDays, pointsToday, totalPoints, streak, longestStreak;
 
   Scorecard(
@@ -16,7 +17,8 @@ class Scorecard {
       this.pointsToday = 0,
       this.totalPoints = 0,
       this.streak = 0,
-      this.longestStreak = 0});
+      this.longestStreak = 0,
+      this.comment = ""});
 
   Map<String, dynamic> toJSON() => {
         habitName: {
@@ -25,7 +27,8 @@ class Scorecard {
           Constants.totalDays: totalDays,
           Constants.streak: streak,
           Constants.longstreak: longestStreak,
-          Constants.barStrength: barStrength
+          Constants.barStrength: barStrength,
+          Constants.comment: comment
         }
       };
 
@@ -37,5 +40,6 @@ class Scorecard {
           totalDays: m[Constants.totalDays],
           streak: m[Constants.streak],
           longestStreak: m[Constants.longstreak],
-          barStrength: m[Constants.barStrength]);
+          barStrength: m[Constants.barStrength],
+          comment: m[Constants.comment]);
 }
