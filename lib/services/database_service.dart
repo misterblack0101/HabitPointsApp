@@ -38,12 +38,10 @@ class DbService {
     return streamToPublish;
   }
 
-  Stream<int> getTotalPointsOverall() {
-    Stream<DatabaseEvent> _pointStream =
-        _userRef.child(Constants.totalPointsOverall).onValue;
-    final streamToPublish =
-        _pointStream.map((event) => event.snapshot.value as int);
-    return streamToPublish;
+  Future<int> getTotalpointsOverall() async {
+    DatabaseEvent _event =
+        await _userRef.child(Constants.totalPointsOverall).once();
+    return _event.snapshot.value as int;
   }
 
   //to add one point for a habit.
@@ -72,90 +70,111 @@ class DbService {
     _scorecardRef.child(habitname).remove();
   }
 
-  Future syncScorecard() async {
+  Future<bool> syncScorecard() async {
     DateTime now = DateTime.now();
 
-    DataSnapshot snapshot = await _userRef.child(Constants.lastSyncDate).get();
-    // If its a new user,
+    DataSnapshot snapshot = await _userRef
+        .child(Constants.lastSyncDate)
+        .get(); // If its a new user,
+
     if (snapshot.value == null) {
       _userRef
           .child(Constants.lastSyncDate)
           .set(DateTime.now().toIso8601String());
       _userRef.child(Constants.totalPointsToday).set(0);
       _userRef.child(Constants.totalPointsOverall).set(0);
-      return;
+      return false;
     }
     DateTime dateFromDb = DateTime.parse(snapshot.value as String);
     if (now.isAfter(dateFromDb) && now.day != dateFromDb.day) {
       // what to do if we need to sync
       //this can be the next day, or after any no. of days.
       int dateDiff = _getDateDifference(now, dateFromDb);
-      DataSnapshot snapshot = await scorecardRef.get();
-      Map<dynamic, dynamic> map = snapshot.value as Map<dynamic, dynamic>;
+      DatabaseEvent event = await scorecardRef.once();
+      Map<dynamic, dynamic> map = event.snapshot.value as Map<dynamic, dynamic>;
       map.forEach(
         (k, v) => {
           _syncHelper(k as String, dateDiff),
         },
       );
-      // upfating total points overall
+
+      // updating total points overall.
+      //getting the total points today
+      DatabaseEvent _temp =
+          await _userRef.child(Constants.totalPointsToday).once();
+      //updating the total points overall
       _userRef.update({
-        Constants.totalPointsOverall: ServerValue.increment(
-            _userRef.child(Constants.totalPointsToday).get() as int)
+        Constants.totalPointsOverall:
+            ServerValue.increment(_temp.snapshot.value as int)
       });
       //setting total points today to 0
       _userRef.child(Constants.totalPointsToday).set(0);
       //setting last sync date timestamp to today.
       _userRef.child(Constants.lastSyncDate).set(now.toIso8601String());
+      return true;
+    } else {
+      return false;
     }
   }
 
   void _syncHelper(String habitName, int diff) async {
     //if syncing the very next day.
-    int pointsToday = (_scorecardRef
-            .child(habitName)
-            .child(Constants.pointsToday)
-            .get() as DataSnapshot)
-        .value as int;
 
+    DatabaseEvent _pointsTodayEvent = await _scorecardRef
+        .child(habitName)
+        .child(Constants.pointsToday)
+        .once();
+    int pointsToday = _pointsTodayEvent.snapshot.value as int;
+
+//for streak and barstrength
     if (pointsToday > 0 && diff == 1) {
-      //update total days
-      // scorecard.totalDays += 1;
-      _scorecardRef
-          .child(habitName)
-          .update({Constants.totalDays: ServerValue.increment(1)});
-
-      //update total points
-      // scorecard.totalPoints += scorecard.pointsToday;
-      _scorecardRef
-          .child(habitName)
-          .update({Constants.totalPoints: ServerValue.increment(pointsToday)});
-
-      //update streak
-      // scorecard.streak += 1;
-      _scorecardRef
-          .child(habitName)
-          .update({Constants.streak: ServerValue.increment(1)});
-
-      //update barstrength
-      // scorecard.barStrength += 1;
-      _scorecardRef
-          .child(habitName)
-          .update({Constants.barStrength: ServerValue.increment(1)});
+      _scorecardRef.child(habitName).update({
+        Constants.barStrength: ServerValue.increment(1),
+        Constants.streak: ServerValue.increment(1)
+      });
     } else {
-      // scorecard.streak = 0;
-      _scorecardRef.child(habitName).child(Constants.streak).set(0);
-
-      //what to do  about barstrength if there's a gap in syncing.
-      // scorecard.barStrength -= diff;
-      _scorecardRef
-          .child(habitName)
-          .update({Constants.barStrength: ServerValue.increment(-1 * diff)});
+      _scorecardRef.child(habitName).update({
+        Constants.barStrength: ServerValue.increment(-1 * diff),
+        Constants.streak: 0
+      });
     }
-    int barStrength = (_scorecardRef
-            .child(habitName)
-            .child(Constants.barStrength)
-            .get() as DataSnapshot)
-        .value as int;
+    _correctBarStrength(habitName);
+
+    //update total days and total points
+    _scorecardRef.child(habitName).update({
+      Constants.totalDays: ServerValue.increment(diff),
+      Constants.totalPoints: ServerValue.increment(pointsToday),
+    });
+
+    //update longest streak
+    _updateLongestStreak(habitName);
+
+    //set pointsToday to 0
+    _scorecardRef.child(habitName).update({Constants.pointsToday: 0});
+  }
+
+  Future<void> _updateLongestStreak(String habitName) async {
+    DatabaseEvent _streakEvent =
+        await _scorecardRef.child(habitName).child(Constants.streak).once();
+    int streak = _streakEvent.snapshot.value as int;
+    DatabaseEvent _longestStreakEvent =
+        await _scorecardRef.child(habitName).child(Constants.longstreak).once();
+    int longestStreak = _longestStreakEvent.snapshot.value as int;
+    if (streak > longestStreak) {
+      _scorecardRef.child(habitName).update({Constants.longstreak: streak});
+    }
+  }
+
+  int _getDateDifference(DateTime now, DateTime external) {
+    return (now.difference(external).inHours / 24).round();
+  }
+
+  Future<void> _correctBarStrength(String habitName) async {
+    DatabaseEvent _barEvent = await _scorecardRef
+        .child(habitName)
+        .child(Constants.barStrength)
+        .once();
+    int barStrength = _barEvent.snapshot.value as int;
 
     if (barStrength > 3) {
       // scorecard.barStrength = 3;
@@ -164,24 +183,5 @@ class DbService {
       // scorecard.barStrength = 0;
       _scorecardRef.child(habitName).update({Constants.barStrength: 0});
     }
-
-    //update total streak
-    int streak = (_scorecardRef.child(habitName).child(Constants.streak).get()
-            as DataSnapshot)
-        .value as int;
-    int longestStreak = (_scorecardRef
-            .child(habitName)
-            .child(Constants.longstreak)
-            .get() as DataSnapshot)
-        .value as int;
-    if (streak > longestStreak) {
-      _scorecardRef.child(habitName).update({Constants.longstreak: streak});
-    }
-    //set todayPoints to 0
-    _scorecardRef.child(habitName).update({Constants.pointsToday: 0});
-  }
-
-  int _getDateDifference(DateTime now, DateTime external) {
-    return (now.difference(external).inHours / 24).round();
   }
 }
