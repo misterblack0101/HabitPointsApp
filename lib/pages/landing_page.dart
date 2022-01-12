@@ -20,7 +20,7 @@ class LandingPage extends StatelessWidget {
           }
           Constants.user = FirebaseAuth.instance.currentUser as User;
           Constants.userId = Constants.user!.uid;
-          return HomePage();
+          return const HomePage();
         } else {
           return const Scaffold(
             body: Center(

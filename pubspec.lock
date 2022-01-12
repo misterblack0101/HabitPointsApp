@@ -43,13 +43,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   fake_async:
     dependency: transitive
     description:
@@ -150,7 +143,7 @@ packages:
     source: sdk
     version: "0.0.0"
   font_awesome_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
@@ -245,6 +238,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sleek_circular_slider:
+    dependency: "direct main"
+    description:
+      name: sleek_circular_slider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   source_span:
     dependency: transitive
     description:
