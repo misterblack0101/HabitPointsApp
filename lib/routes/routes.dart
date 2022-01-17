@@ -15,19 +15,19 @@ class RouteManager {
     switch (settings.name) {
       case landingPage:
         return MaterialPageRoute(
-          builder: (context) => LandingPage(),
+          builder: (context) => const LandingPage(),
         );
       case loginPage:
         return MaterialPageRoute(
-          builder: (context) => LoginPage(),
+          builder: (context) => const LoginPage(),
         );
       case habitPage:
         return MaterialPageRoute(
-          builder: (context) => HabitPage(),
+          builder: (context) => const HabitPage(),
         );
       case homePage:
         return MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => const HomePage(),
         );
 
       default:

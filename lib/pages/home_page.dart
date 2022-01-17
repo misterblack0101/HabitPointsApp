@@ -1,92 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants.dart';
 import 'package:flutter_application_1/models/scorecard_model.dart';
-import 'package:flutter_application_1/pages/drawerScreen.dart';
+import 'package:flutter_application_1/services/base_drawer_controller.dart';
 import 'package:flutter_application_1/services/database_service.dart';
+import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:flutter_application_1/widgets/custom_tile.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        child: Stack(
-          children: const [
-            DrawerScreen(),
-            HomeScreen(),
-          ],
-        ),
-      ),
-    );
+    return const BaseDrawerController(mainScreen: HomeScreen());
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends GetView<MyDrawerController> {
+  // bool isDrawerOpen = false;
+
   const HomeScreen({Key? key}) : super(key: key);
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  double xOffset = 0, yoffset = 0, scaleFactor = 1;
-  bool isDrawerOpen = false;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      if (await DbService.instance.syncScorecard()) {
-        setState(() {});
-      }
-    });
-  }
+  
+//TODO
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance!.addPostFrameCallback((_) async {
+  //     if (await DbService.instance.syncScorecard()) {
+  //       setState(() {});
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return AnimatedContainer(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(isDrawerOpen ? 40 : 0.0),
-        color: Constants.homeScreenColor,
-      ),
-      transform: Matrix4.translationValues(xOffset, yoffset, 0)
-        ..scale(scaleFactor),
-      duration: const Duration(milliseconds: 250),
+    return Container(
+      color: Constants.homeScreenColor,
       child: Column(
         children: [
           //Heading Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              isDrawerOpen
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          xOffset = 0;
-                          yoffset = 0;
-                          scaleFactor = 1;
-                          isDrawerOpen = false;
-                        });
-                      },
-                      icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                      iconSize: 30,
-                      // padding: const EdgeInsets.only(left: 10),
-                    )
-                  : IconButton(
-                      onPressed: () {
-                        setState(() {
-                          xOffset = 0.6 * width;
-                          yoffset = 0.2 * height;
-                          scaleFactor = 0.6;
-                          isDrawerOpen = true;
-                        });
-                      },
-                      icon: const Icon(Icons.menu),
-                      iconSize: 30,
-                      // padding: const EdgeInsets.only(left: 10),
-                    ),
+              IconButton(
+                onPressed: controller.toggleDrawer,
+                icon: const Icon(Icons.menu),
+                iconSize: 30,
+              ),
               StreamBuilder(
                 stream: DbService.instance.getTotalPointsToday(),
                 builder: (context, snapshot) {
@@ -128,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           )
         ],
+        // ),
       ),
     );
   }

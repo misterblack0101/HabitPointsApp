@@ -13,6 +13,7 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
+//TODO: Remove sign in with email, because its causing errors with photo and name in drawerscreen.
 class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn googleSignin = GoogleSignIn();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;

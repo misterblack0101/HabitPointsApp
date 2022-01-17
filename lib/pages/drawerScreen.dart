@@ -1,11 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants.dart';
+import 'package:flutter_application_1/pages/habit_page.dart';
+import 'package:flutter_application_1/pages/home_page.dart';
 import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_application_1/services/database_service.dart';
+import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get/route_manager.dart';
 
-class DrawerScreen extends StatelessWidget {
+class DrawerScreen extends GetView<MyDrawerController> {
   const DrawerScreen({Key? key}) : super(key: key);
 
   @override
@@ -81,8 +86,9 @@ class DrawerScreen extends StatelessWidget {
                 icon: Icons.home_rounded,
                 text: "Home",
                 onpressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, RouteManager.homePage);
+                  // controller.toggleDrawer();
+                  Get.off(const HomePage());
+                  controller.toggleDrawer();
                 },
               ),
               const SizedBox(height: 5),
@@ -92,7 +98,8 @@ class DrawerScreen extends StatelessWidget {
                 icon: Icons.edit,
                 text: "Habits",
                 onpressed: () {
-                  Navigator.pushNamed(context, RouteManager.habitPage);
+                  Get.off(const HabitPage());
+                  controller.toggleDrawer();
                 },
               ),
               const SizedBox(height: 5),
