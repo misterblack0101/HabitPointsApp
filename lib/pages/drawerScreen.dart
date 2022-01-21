@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/constants.dart';
 import 'package:flutter_application_1/pages/habit_page.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
-import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_application_1/services/database_service.dart';
 import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -109,8 +108,7 @@ class DrawerScreen extends GetView<MyDrawerController> {
                 icon: Icons.settings,
                 text: "Settings",
                 onpressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, RouteManager.homePage);
+                 
                 },
               ),
               const SizedBox(height: 5),
@@ -120,8 +118,7 @@ class DrawerScreen extends GetView<MyDrawerController> {
                 icon: Icons.person,
                 text: "Account",
                 onpressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, RouteManager.homePage);
+                  
                 },
               ),
               const SizedBox(height: 5),

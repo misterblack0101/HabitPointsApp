@@ -108,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
                   if (status) {
                     alertDialogShower(context, "Signup Successful!",
                         "Your account has been created successfully!\nPlease login again with email id and password.");
-                    // TODO: scorecardservice.newscorecard, because account is created.
                   }
                 },
               ),

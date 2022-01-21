@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/landing_page.dart';
-import 'package:flutter_application_1/routes/routes.dart';
 import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:get/get.dart';
 
