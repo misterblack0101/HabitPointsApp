@@ -70,7 +70,7 @@ class DbService {
     _scorecardRef.child(habitname).remove();
   }
 
-  Future<bool> syncScorecard() async {
+  Future<void> syncScorecard() async {
     DateTime now = DateTime.now();
 
     DataSnapshot snapshot = await _userRef
@@ -83,7 +83,7 @@ class DbService {
           .set(DateTime.now().toIso8601String());
       _userRef.child(Constants.totalPointsToday).set(0);
       _userRef.child(Constants.totalPointsOverall).set(0);
-      return false;
+      return;
     }
     DateTime dateFromDb = DateTime.parse(snapshot.value as String);
     if (now.isAfter(dateFromDb) && now.day != dateFromDb.day) {
@@ -111,9 +111,10 @@ class DbService {
       _userRef.child(Constants.totalPointsToday).set(0);
       //setting last sync date timestamp to today.
       _userRef.child(Constants.lastSyncDate).set(now.toIso8601String());
-      return true;
+
+      return;
     } else {
-      return false;
+      return;
     }
   }
 

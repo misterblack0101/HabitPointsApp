@@ -5,6 +5,9 @@ import 'package:flutter_application_1/services/base_drawer_controller.dart';
 import 'package:flutter_application_1/services/database_service.dart';
 import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:flutter_application_1/widgets/custom_tile.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,20 +23,11 @@ class HomeScreen extends GetView<MyDrawerController> {
 
   const HomeScreen({Key? key}) : super(key: key);
 
-  
-//TODO
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance!.addPostFrameCallback((_) async {
-  //     if (await DbService.instance.syncScorecard()) {
-  //       setState(() {});
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
+    //the function is async, but we're not waiting for it, 
+    //because we want the syncing to happen in background.
+    DbService.instance.syncScorecard();
     return Container(
       color: Constants.homeScreenColor,
       child: Column(
@@ -76,11 +70,26 @@ class HomeScreen extends GetView<MyDrawerController> {
               if (snap.hasData) {
                 final cardsList = snap.data as List<Scorecard>;
                 return Expanded(
-                  child: ListView.builder(
-                    itemCount: cardsList.length,
-                    itemBuilder: (context, index) {
-                      return CustomListTile(sc: cardsList[index]);
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await DbService.instance.syncScorecard();
+                      Get.snackbar(
+                        "Sync Successful!",
+                        "",
+                        snackPosition: SnackPosition.BOTTOM,
+                        duration: const Duration(seconds: 1),
+                        overlayBlur: 0,
+                        barBlur: 0,
+                        backgroundColor: Constants.barColor,
+                        animationDuration: const Duration(milliseconds: 500),
+                      );
                     },
+                    child: ListView.builder(
+                      itemCount: cardsList.length,
+                      itemBuilder: (context, index) {
+                        return CustomListTile(sc: cardsList[index]);
+                      },
+                    ),
                   ),
                 );
               }
