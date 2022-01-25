@@ -19,18 +19,18 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeScreen extends GetView<MyDrawerController> {
-  // bool isDrawerOpen = false;
-
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //the function is async, but we're not waiting for it, 
+    //the function is async, but we're not waiting for it,
     //because we want the syncing to happen in background.
     DbService.instance.syncScorecard();
-    return Container(
-      color: Constants.homeScreenColor,
-      child: Column(
+
+//TODO: implement swipe to open drawer, on all screens.
+    return Scaffold(
+      backgroundColor: Constants.homeScreenColor,
+      body: Column(
         children: [
           //Heading Row
           Row(
@@ -97,7 +97,6 @@ class HomeScreen extends GetView<MyDrawerController> {
             },
           )
         ],
-        // ),
       ),
     );
   }

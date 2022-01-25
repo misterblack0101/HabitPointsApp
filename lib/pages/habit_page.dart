@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/constants.dart';
 import 'package:flutter_application_1/services/base_drawer_controller.dart';
 import 'package:flutter_application_1/services/drawercontroller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
+
+import '../constants.dart';
 
 class HabitPage extends StatelessWidget {
   const HabitPage({Key? key}) : super(key: key);
@@ -18,10 +19,9 @@ class HabitScreen extends GetView<MyDrawerController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // color: Constants.homeScreenColor,
-      color: Colors.red,
-      child: Column(
+    return Scaffold(
+      backgroundColor: Constants.homeScreenColor,
+      body: Column(
         children: [
           //Heading Row
           Row(
