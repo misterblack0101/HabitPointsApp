@@ -6,7 +6,7 @@
 import 'package:flutter_application_1/constants.dart';
 
 class Scorecard {
-  final String habitName;
+  String habitName;
   String comment;
   int barStrength, totalDays, pointsToday, totalPoints, streak, longestStreak;
 

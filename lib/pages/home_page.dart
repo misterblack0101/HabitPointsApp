@@ -4,7 +4,7 @@ import 'package:flutter_application_1/models/scorecard_model.dart';
 import 'package:flutter_application_1/services/base_drawer_controller.dart';
 import 'package:flutter_application_1/services/database_service.dart';
 import 'package:flutter_application_1/services/drawercontroller.dart';
-import 'package:flutter_application_1/widgets/custom_tile.dart';
+import 'package:flutter_application_1/widgets/home_custom_tile.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -87,7 +87,7 @@ class HomeScreen extends GetView<MyDrawerController> {
                     child: ListView.builder(
                       itemCount: cardsList.length,
                       itemBuilder: (context, index) {
-                        return CustomListTile(sc: cardsList[index]);
+                        return HomeCustomListTile(sc: cardsList[index]);
                       },
                     ),
                   ),

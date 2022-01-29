@@ -4,8 +4,8 @@ import 'package:flutter_application_1/models/scorecard_model.dart';
 import 'package:flutter_application_1/services/database_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class CustomListTile extends StatelessWidget {
-  const CustomListTile({Key? key, required this.sc}) : super(key: key);
+class HomeCustomListTile extends StatelessWidget {
+  const HomeCustomListTile({Key? key, required this.sc}) : super(key: key);
   final Scorecard sc;
   @override
   Widget build(BuildContext context) {
